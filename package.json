@@ -1,0 +1,92 @@
+{
+  "name": "electric-color",
+  "displayName": "Electric Color",
+  "description": "Colors words, numbers, and symbols in plaintext or inside code comments and strings.",
+  "version": "0.1.1",
+  "publisher": "missinglink",
+  "license": "MIT",
+  "icon": "icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "electricColor.toggle",
+        "title": "Toggle Coloring",
+        "category": "Electric Color"
+      }
+    ],
+    "configuration": {
+      "title": "Electric Color",
+      "properties": {
+        "electricColor.languages": {
+          "type": "array",
+          "default": [
+            "*"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "Language IDs colored throughout the whole document. Use * to color every text document."
+        },
+        "electricColor.scopedLanguages": {
+          "type": "array",
+          "default": [
+            "javascript",
+            "javascriptreact",
+            "typescript",
+            "typescriptreact",
+            "python",
+            "html",
+            "css",
+            "scss",
+            "less",
+            "json",
+            "jsonc",
+            "java",
+            "c",
+            "cpp",
+            "csharp",
+            "go",
+            "rust",
+            "groovy",
+            "jenkinsfile",
+            "gradle",
+            "ruby",
+            "shellscript",
+            "yaml",
+            "dockerfile",
+            "xml",
+            "php",
+            "swift",
+            "kotlin"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "Language IDs colored only inside comments and strings."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "check": "node --check src/colors.js && node --check src/scopes.js && node --check src/extension.js && node --check web/colorizer.js && node test/colors.test.js && node test/scopes.test.js && node test/web.test.js && cd electric-shell && go test ./...",
+    "cli": "cd electric-shell && go run .",
+    "cli:install": "mkdir -p \"$HOME/.local/bin\" && cd electric-shell && env GOBIN=\"$HOME/.local/bin\" go install .",
+    "package": "vsce package",
+    "publish": "vsce publish",
+    "rebuild": "./rebuild.sh"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.9.2"
+  }
+}
