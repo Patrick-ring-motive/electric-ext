@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Electric Color Copier</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #080b10;
+      color: #e6edf3;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(78, 78, 255, 0.16), transparent 36rem),
+        radial-gradient(circle at 100% 100%, rgba(255, 121, 198, 0.1), transparent 34rem),
+        #080b10;
+    }
+
+    main {
+      width: min(960px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 48px 0;
+    }
+
+    header { margin-bottom: 24px; }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      letter-spacing: -0.055em;
+    }
+
+    header p {
+      max-width: 650px;
+      margin: 10px 0 0;
+      color: #9da7b3;
+      line-height: 1.55;
+    }
+
+    .card {
+      overflow: hidden;
+      border: 1px solid #262d38;
+      border-radius: 18px;
+      background: rgba(17, 22, 30, 0.92);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+    }
+
+    .section { padding: 20px; }
+    .section + .section { border-top: 1px solid #262d38; }
+
+    .label-row,
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    label,
+    .preview-label {
+      color: #c9d1d9;
+      font-size: 0.78rem;
+      font-weight: 750;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .hint {
+      color: #717c89;
+      font-size: 0.78rem;
+    }
+
+    textarea,
+    .preview {
+      width: 100%;
+      min-height: 240px;
+      margin-top: 12px;
+      padding: 16px;
+      border: 1px solid #303946;
+      border-radius: 12px;
+      outline: none;
+      background: #0d1117;
+      color: #e6edf3;
+      font: 14px/1.55 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      tab-size: 2;
+    }
+
+    textarea {
+      display: block;
+      resize: vertical;
+      caret-color: #7ee787;
+    }
+
+    textarea:focus {
+      border-color: #4e4eff;
+      box-shadow: 0 0 0 3px rgba(78, 78, 255, 0.16);
+    }
+
+    .preview {
+      overflow: auto;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .actions {
+      justify-content: flex-end;
+      padding-top: 16px;
+    }
+
+    button {
+      min-height: 42px;
+      padding: 0 17px;
+      border: 1px solid #354050;
+      border-radius: 10px;
+      background: #171d26;
+      color: #e6edf3;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover { background: #202835; }
+    button:focus-visible { outline: 3px solid rgba(78, 78, 255, 0.55); }
+
+    .primary {
+      border-color: #6666ff;
+      background: #4e4eff;
+      color: white;
+    }
+
+    .primary:hover { background: #6262ff; }
+
+    #status {
+      min-width: 11rem;
+      margin-right: auto;
+      color: #7ee787;
+      font-size: 0.86rem;
+    }
+
+    @media (max-width: 600px) {
+      main { width: min(100% - 20px, 960px); padding: 24px 0; }
+      .section { padding: 14px; }
+      .hint { display: none; }
+      textarea, .preview { min-height: 200px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Electric Color</h1>
+      <p>Type or paste text to preview the Electric Color scheme.</p>
+    </header>
+
+    <section class="card" aria-label="Electric Color copier">
+      <div class="section">
+        <div class="label-row">
+          <label for="source">Text</label>
+          <span class="hint">⌘ + Enter to copy</span>
+        </div>
+        <textarea id="source" spellcheck="false" autofocus>Blue skies + green trees
+Red apples, yellow bananas, and 42 purple grapes.
+{ Electric [Color] } • &lt;ready&gt;</textarea>
+      </div>
+
+      <div class="section">
+        <div class="preview-label">Preview</div>
+        <div id="preview" class="preview" aria-live="polite"></div>
+        <div class="actions">
+          <span id="status" role="status" aria-live="polite"></span>
+          <button id="clear" type="button">Clear</button>
+          <button id="copy" class="primary" type="button">Copy for Teams</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="colorizer.js"></script>
+  <script>
+    const source = document.querySelector('#source');
+    const preview = document.querySelector('#preview');
+    const copyButton = document.querySelector('#copy');
+    const clearButton = document.querySelector('#clear');
+    const status = document.querySelector('#status');
+    let statusTimer;
+
+    function render() {
+      preview.replaceChildren();
+      for (const run of ElectricColor.colorize(source.value)) {
+        const span = document.createElement('span');
+        span.textContent = run.text;
+        if (run.color) span.style.color = run.color;
+        preview.append(span);
+      }
+      copyButton.disabled = source.value.length === 0;
+    }
+
+    function showStatus(message, isError = false) {
+      clearTimeout(statusTimer);
+      status.textContent = message;
+      status.style.color = isError ? '#ff7b72' : '#7ee787';
+      statusTimer = setTimeout(() => { status.textContent = ''; }, 2800);
+    }
+
+    function fallbackCopy(html) {
+      const holder = document.createElement('div');
+      holder.contentEditable = 'true';
+      holder.style.position = 'fixed';
+      holder.style.left = '-9999px';
+      holder.innerHTML = html;
+      document.body.append(holder);
+
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(holder);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      const copied = document.execCommand('copy');
+      selection.removeAllRanges();
+      holder.remove();
+      if (!copied) throw new Error('Copy was blocked by the browser');
+    }
+
+    async function copyForTeams() {
+      const text = source.value;
+      if (!text) return;
+      const html = ElectricColor.clipboardHtml(text);
+
+      try {
+        if (window.ClipboardItem && navigator.clipboard?.write) {
+          const item = new ClipboardItem({
+            'text/plain': new Blob([text], { type: 'text/plain' }),
+            'text/html': new Blob([html], { type: 'text/html' }),
+          });
+          await navigator.clipboard.write([item]);
+        } else {
+          fallbackCopy(html);
+        }
+        showStatus('Copied with Teams-safe colors');
+      } catch (error) {
+        try {
+          fallbackCopy(html);
+          showStatus('Copied with Teams-safe colors');
+        } catch {
+          showStatus(error.message || 'Could not copy', true);
+        }
+      }
+    }
+
+    source.addEventListener('input', render);
+    source.addEventListener('keydown', (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+        event.preventDefault();
+        copyForTeams();
+      }
+    });
+    copyButton.addEventListener('click', copyForTeams);
+    clearButton.addEventListener('click', () => {
+      source.value = '';
+      render();
+      source.focus();
+    });
+
+    render();
+  </script>
+</body>
+</html>
