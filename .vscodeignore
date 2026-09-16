@@ -1,0 +1,12 @@
+.vscode/**
+.git/**
+.gitignore
+test/**
+web/**
+canvas.js
+code.js
+color.js
+hooks.js
+avatar.png
+**/*.test.js
+.vscodeignore
