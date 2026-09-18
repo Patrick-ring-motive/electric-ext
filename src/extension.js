@@ -1,8 +1,12 @@
 'use strict';
 
 const vscode = require('vscode');
-const { rules } = require('./colors');
-const { getColorableSpans } = require('./scopes');
+const {
+  rules
+} = require('./colors');
+const {
+  getColorableSpans
+} = require('./scopes');
 
 const decorations = new Map();
 let enabled = true;
@@ -13,7 +17,9 @@ function getDecoration(rule, filter) {
   if (!decorations.has(key)) {
     const decoration = vscode.window.createTextEditorDecorationType({
       color: rule.color,
-      ...(filter && { textDecoration: `none; filter: ${filter}` }),
+      ...(filter && {
+        textDecoration: `none; filter: ${filter}`
+      }),
     });
     decorations.set(key, decoration);
     subscriptions.push(decoration);
@@ -52,9 +58,12 @@ function update(editor = vscode.window.activeTextEditor) {
   }
 
   const text = editor.document.getText();
-  const spans = mode === 'document'
-    ? [{ start: 0, end: text.length }]
-    : getColorableSpans(text, editor.document.languageId);
+  const spans = mode === 'document' ?
+    [{
+      start: 0,
+      end: text.length
+    }] :
+    getColorableSpans(text, editor.document.languageId);
 
   for (const rule of rules) {
     const rangesByDecoration = new Map();
@@ -86,7 +95,9 @@ function update(editor = vscode.window.activeTextEditor) {
 
 function activate(context) {
   subscriptions = context.subscriptions;
-  for (const rule of rules.filter(({ filter }) => !filter)) {
+  for (const rule of rules.filter(({
+      filter
+    }) => !filter)) {
     getDecoration(rule);
   }
 
@@ -115,8 +126,9 @@ function activate(context) {
         `Electric Color: ${enabled ? 'enabled' : 'disabled'}`,
         2000,
       );
-    }),
-    { dispose: () => clearTimeout(timer) },
+    }), {
+      dispose: () => clearTimeout(timer)
+    },
   );
 
   update();
@@ -124,4 +136,7 @@ function activate(context) {
 
 function deactivate() {}
 
-module.exports = { activate, deactivate };
+module.exports = {
+  activate,
+  deactivate
+};
