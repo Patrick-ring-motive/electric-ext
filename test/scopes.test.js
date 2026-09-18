@@ -1,11 +1,16 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const { getColorableSpans } = require('../src/scopes');
+const {
+  getColorableSpans
+} = require('../src/scopes');
 
 function scopedText(text, languageId) {
   return getColorableSpans(text, languageId)
-    .map(({ start, end }) => text.slice(start, end));
+    .map(({
+      start,
+      end
+    }) => text.slice(start, end));
 }
 
 assert.deepEqual(
