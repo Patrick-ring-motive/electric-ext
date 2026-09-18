@@ -88,7 +88,10 @@
     if (previous && previous.color === color) {
       previous.text += text;
     } else {
-      runs.push({ text, color });
+      runs.push({
+        text,
+        color
+      });
     }
   }
 
@@ -112,7 +115,10 @@
       for (const [name, pattern] of fixedRules) {
         const match = rest.match(pattern);
         if (match) {
-          fixedMatch = { text: match[0], color: colors[name] };
+          fixedMatch = {
+            text: match[0],
+            color: colors[name]
+          };
           break;
         }
       }
@@ -128,9 +134,9 @@
         const word = characters.slice(index, end).join('');
         const leftBoundary = index === 0 || !asciiWord.test(characters[index - 1]);
         const rightBoundary = end === characters.length || !asciiWord.test(characters[end]);
-        const rule = leftBoundary && rightBoundary
-          ? wordRules.find(([, pattern]) => pattern.test(word))
-          : undefined;
+        const rule = leftBoundary && rightBoundary ?
+          wordRules.find(([, pattern]) => pattern.test(word)) :
+          undefined;
         if (rule) {
           appendRun(runs, word, colors[rule[0]]);
           index = end;
@@ -161,9 +167,9 @@
   function relativeLuminance(hex) {
     const channels = hex.match(/[0-9a-f]{2}/gi).map((value) => {
       const channel = parseInt(value, 16) / 255;
-      return channel <= 0.04045
-        ? channel / 12.92
-        : ((channel + 0.055) / 1.055) ** 2.4;
+      return channel <= 0.04045 ?
+        channel / 12.92 :
+        ((channel + 0.055) / 1.055) ** 2.4;
     });
     return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
   }
@@ -185,19 +191,22 @@
   function runsToHtml(runs, options = {}) {
     const defaultColor = options.defaultColor;
     const palette = options.palette;
-    return runs.map(({ text, color }) => {
+    return runs.map(({
+      text,
+      color
+    }) => {
       const safeText = escapeHtml(text);
       if (color) {
-        const outputColor = palette
-          ? palette[color.toLowerCase()] || teamsColor(color)
-          : color;
+        const outputColor = palette ?
+          palette[color.toLowerCase()] || teamsColor(color) :
+          color;
         // Teams' editor may discard span styles but still honors the HTML
         // color attribute used by Outlook/Word clipboard content.
         return `<font color="${outputColor}"><span style="color:${outputColor}">${safeText}</span></font>`;
       }
-      return defaultColor
-        ? `<font color="${defaultColor}"><span style="color:${defaultColor}">${safeText}</span></font>`
-        : safeText;
+      return defaultColor ?
+        `<font color="${defaultColor}"><span style="color:${defaultColor}">${safeText}</span></font>` :
+        safeText;
     }).join('');
   }
 
