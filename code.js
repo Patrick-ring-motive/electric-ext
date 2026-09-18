@@ -26,7 +26,10 @@
   );
   const getRule = text => {
     for (const [pattern, color, filter] of Object.values(rules)) {
-      if (pattern.test(text)) return { color, filter };
+      if (pattern.test(text)) return {
+        color,
+        filter
+      };
     }
     return {};
   };
@@ -36,7 +39,9 @@
     let offset = 0;
     for (const match of value.matchAll(allPattern)) {
       if (match.index > offset) {
-        runs.push({ text: value.slice(offset, match.index) });
+        runs.push({
+          text: value.slice(offset, match.index)
+        });
       }
       const rule = getRule(match[0]);
       const parts = rule.filter ? [...match[0]] : [match[0]];
@@ -49,7 +54,9 @@
       }
       offset = match.index + match[0].length;
     }
-    if (offset < value.length) runs.push({ text: value.slice(offset) });
+    if (offset < value.length) runs.push({
+      text: value.slice(offset)
+    });
     return runs;
   };
 
@@ -75,20 +82,20 @@
       const naturalWidth = widths.reduce((sum, width) => sum + width, 0);
       if (!naturalWidth) return nativeDraw.apply(this, arguments);
 
-      const scale = Number.isFinite(maxWidth) && maxWidth >= 0
-        ? Math.min(1, maxWidth / naturalWidth)
-        : 1;
+      const scale = Number.isFinite(maxWidth) && maxWidth >= 0 ?
+        Math.min(1, maxWidth / naturalWidth) :
+        1;
       const direction = this.direction === "rtl" ? "rtl" : "ltr";
-      const align = this.textAlign === "start"
-        ? (direction === "rtl" ? "right" : "left")
-        : this.textAlign === "end"
-          ? (direction === "rtl" ? "left" : "right")
-          : this.textAlign;
-      const start = align === "center"
-        ? -naturalWidth / 2
-        : align === "right"
-          ? -naturalWidth
-          : 0;
+      const align = this.textAlign === "start" ?
+        (direction === "rtl" ? "right" : "left") :
+        this.textAlign === "end" ?
+        (direction === "rtl" ? "left" : "right") :
+        this.textAlign;
+      const start = align === "center" ?
+        -naturalWidth / 2 :
+        align === "right" ?
+        -naturalWidth :
+        0;
       const styleProperty = method === "fillText" ? "fillStyle" : "strokeStyle";
       const originalStyle = this[styleProperty];
       const originalFilter = this.filter;
@@ -111,7 +118,6 @@
     }, nativeDraw);
   }
 })();
-
 
 (() => {
   const {
@@ -174,7 +180,10 @@
   const matchColor = text => {
     for (const key in compoundRe) {
       if (test(compoundRe[key]?.[0], text)) {
-        return { key, color: compoundRe[key][1] };
+        return {
+          key,
+          color: compoundRe[key][1]
+        };
       }
     }
     return undefined;
@@ -276,9 +285,9 @@
       `${selector} *:not(script):not(style):not(link):not(meta):not(title):not(:has(*)):not([class^="color"],[class^="color"] *)`,
     ])
     .join(', ');
-  const isInScope = (node) => node?.nodeType === Node.TEXT_NODE
-    ? Boolean(node.parentElement?.closest?.(scopeSelector))
-    : Boolean(node?.closest?.(scopeSelector));
+  const isInScope = (node) => node?.nodeType === Node.TEXT_NODE ?
+    Boolean(node.parentElement?.closest?.(scopeSelector)) :
+    Boolean(node?.closest?.(scopeSelector));
   const setHTML = Object.getOwnPropertyDescriptor(Element.prototype, "innerHTML").set;
   (() => {
     const skips = ["SCRIPT", "STYLE", "LINK", "META", "TITLE"];
@@ -511,7 +520,7 @@
 
   let lastTime = Date.now();
   const loop = 200;
-  setInterval(()=>{
+  setInterval(() => {
 
     if (Date.now() - lastTime < loop) return;
     lastTime = Date.now();
