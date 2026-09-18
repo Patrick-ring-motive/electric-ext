@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,7 +13,9 @@
       color: #e6edf3;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       min-height: 100vh;
@@ -29,7 +32,9 @@
       padding: 48px 0;
     }
 
-    header { margin-bottom: 24px; }
+    header {
+      margin-bottom: 24px;
+    }
 
     h1 {
       margin: 0;
@@ -52,8 +57,13 @@
       box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
     }
 
-    .section { padding: 20px; }
-    .section + .section { border-top: 1px solid #262d38; }
+    .section {
+      padding: 20px;
+    }
+
+    .section+.section {
+      border-top: 1px solid #262d38;
+    }
 
     .label-row,
     .actions {
@@ -126,8 +136,13 @@
       cursor: pointer;
     }
 
-    button:hover { background: #202835; }
-    button:focus-visible { outline: 3px solid rgba(78, 78, 255, 0.55); }
+    button:hover {
+      background: #202835;
+    }
+
+    button:focus-visible {
+      outline: 3px solid rgba(78, 78, 255, 0.55);
+    }
 
     .primary {
       border-color: #6666ff;
@@ -135,7 +150,9 @@
       color: white;
     }
 
-    .primary:hover { background: #6262ff; }
+    .primary:hover {
+      background: #6262ff;
+    }
 
     #status {
       min-width: 11rem;
@@ -145,13 +162,28 @@
     }
 
     @media (max-width: 600px) {
-      main { width: min(100% - 20px, 960px); padding: 24px 0; }
-      .section { padding: 14px; }
-      .hint { display: none; }
-      textarea, .preview { min-height: 200px; }
+      main {
+        width: min(100% - 20px, 960px);
+        padding: 24px 0;
+      }
+
+      .section {
+        padding: 14px;
+      }
+
+      .hint {
+        display: none;
+      }
+
+      textarea,
+      .preview {
+        min-height: 200px;
+      }
     }
+
   </style>
 </head>
+
 <body>
   <main>
     <header>
@@ -206,7 +238,9 @@ Red apples, yellow bananas, and 42 purple grapes.
       clearTimeout(statusTimer);
       status.textContent = message;
       status.style.color = isError ? '#ff7b72' : '#7ee787';
-      statusTimer = setTimeout(() => { status.textContent = ''; }, 2800);
+      statusTimer = setTimeout(() => {
+        status.textContent = '';
+      }, 2800);
     }
 
     function fallbackCopy(html) {
@@ -236,8 +270,12 @@ Red apples, yellow bananas, and 42 purple grapes.
       try {
         if (window.ClipboardItem && navigator.clipboard?.write) {
           const item = new ClipboardItem({
-            'text/plain': new Blob([text], { type: 'text/plain' }),
-            'text/html': new Blob([html], { type: 'text/html' }),
+            'text/plain': new Blob([text], {
+              type: 'text/plain'
+            }),
+            'text/html': new Blob([html], {
+              type: 'text/html'
+            }),
           });
           await navigator.clipboard.write([item]);
         } else {
@@ -269,6 +307,8 @@ Red apples, yellow bananas, and 42 purple grapes.
     });
 
     render();
+
   </script>
 </body>
+
 </html>
