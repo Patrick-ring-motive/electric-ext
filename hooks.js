@@ -308,10 +308,12 @@
     };
 
     const observer = new MutationObserver((mutations) => {
-      if (mutations.some(({ target }) =>
-        target.nodeType === Node.ELEMENT_NODE
-          ? target.closest?.('.xterm')
-          : target.parentElement?.closest?.('.xterm'))) {
+      if (mutations.some(({
+            target
+          }) =>
+          target.nodeType === Node.ELEMENT_NODE ?
+          target.closest?.('.xterm') :
+          target.parentElement?.closest?.('.xterm'))) {
         scheduleTerminalColor();
       }
     });
