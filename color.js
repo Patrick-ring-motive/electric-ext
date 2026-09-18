@@ -59,7 +59,10 @@
   const matchColor = text => {
     for (const key in compoundRe) {
       if (test(compoundRe[key]?.[0], text)) {
-        return { key, color: compoundRe[key][1] };
+        return {
+          key,
+          color: compoundRe[key][1]
+        };
       }
     }
     return undefined;
