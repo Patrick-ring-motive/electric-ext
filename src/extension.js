@@ -58,8 +58,7 @@ function update(editor = vscode.window.activeTextEditor) {
   }
 
   const text = editor.document.getText();
-  const spans = mode === 'document' ?
-    [{
+  const spans = mode === 'document' ? [{
       start: 0,
       end: text.length
     }] :
